@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Vật Lý: Aurora Space Lab - Maxwell</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #000; }
+        .game-ui {
+            position: absolute; top: 15px; left: 15px; z-index: 999;
+            background: rgba(12, 10, 28, 0.88); color: #00f7ff; padding: 15px 20px; 
+            border-radius: 8px; border: 1px solid #c77dff; font-size: 13px;
+            pointer-events: none; line-height: 1.7; backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(199, 125, 255, 0.3);
+        }
+        .crosshair {
+            position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; 
+            background: #ff2a00; border-radius: 50%; transform: translate(-50%, -50%);
+            z-index: 998; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-ui">
+        <b style="color: #ffb703; font-size: 14px;">AURORA EXPERIMENT LAB v4.0</b><br>
+        - <b>Di chuyển:</b> W A S D<br>
+        - <b>Góc nhìn:</b> Kéo giữ chuột<br>
+        - <b>Mẹo:</b> Ngước nhìn cực quang uốn lượn và hạt nhân nguyên tử phát sáng!
+    </div>
+
+    <div class="crosshair"></div>
+
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 30" fog="type: exponential; color: #070314; density: 0.02">
+
+        <a-assets>
+            <a-mixin id="btn-geo" geometry="primitive: box; width: 0.65; height: 0.14; depth: 0.08" material="color: #1a1636; metalness: 0.3; roughness: 0.2"></a-mixin>
+            <a-mixin id="txt-btn" text="align: center; width: 1.8; color: #FFF; font: roboto"></a-mixin>
+            <a-mixin id="blue-mat" material="color: #67e8f9; emissive: #67e8f9; emissiveIntensity: 1.2"></a-mixin>
+        </a-assets>
+
+        <a-camera position="0 1.9 7.5" wasd-controls="acceleration: 22" look-controls="pointerLockEnabled: false">
+            <a-cursor fuse="false" objects=".clickable" visible="false"></a-cursor>
+        </a-camera>
+
+        <a-plane position="0 0 0" rotation="-90 0 0" width="100" height="100" material="color: #04020a; metalness: 0.85; roughness: 0.15"></a-plane>
+        <a-plane position="0 0.03 0" rotation="-90 0 0" width="100" height="100" material="color: #00f7ff; wireframe: true; opacity: 0.05"></a-plane>
+
+        <a-entity id="lab-frame" position="0 0 -15" scale="1.2 1.2 1.2">
+            <a-entity position="-15 11.5 0.5">
+                <a-cylinder material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 0.4" height="18" radius="0.06"></a-cylinder>
+                <a-cylinder material="color: #c77dff; emissive: #c77dff; emissiveIntensity: 0.4" height="18" radius="0.06" position="30 0 0"></a-cylinder>
+            </a-entity>
+
+            <a-entity position="0 11.5 -5" scale="0.9 0.9 0.9">
+                <a-sphere radius="1.3" material="color: #00f7ff; emissive: #00f7ff; emissiveIntensity: 2; transparent: true; opacity: 0.9" animation="property: scale; to: 1.15 1.15 1.15; dir: alternate; loop: true; dur: 1200"></a-sphere>
+                
+                <a-entity animation="property: rotation; to: 360 360 0; loop: true; dur: 4000; easing: linear">
+                    <a-torus radius="3.2" radius-tubular="0.08" material="color: #c77dff; emissive: #c77dff; emissiveIntensity: 3"></a-torus>
+                </a-entity>
+                
+                <a-entity animation="property: rotation; to: -360 0 360; loop: true; dur: 5500; easing: linear">
+                    <a-torus radius="3.2" radius-tubular="0.08" rotation="90 0 0" material="color: #c77dff; emissive: #c77dff; emissiveIntensity: 3"></a-torus>
+                </a-entity>
+
+                <a-entity animation="property: rotation; to: 0 360 -360; loop: true; dur: 8000; easing: linear">
+                    <a-torus radius="4.2" radius-tubular="0.03" rotation="45 45 0" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 2; transparent: true; opacity: 0.6"></a-torus>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <a-sky src="https://img.freepik.com/free-photo/vibrant-night-sky-with-stars-nebula-generative-ai_188544-9648.jpg" rotation="0 -90 0" material="opacity: 0.65"></a-sky>
+
+        <a-entity id="aurora-system" position="0 20 -25">
+            <a-entity animation="property: rotation; to: 8 12 5; dir: alternate; loop: true; dur: 7000; easing: easeInOutSine" rotation="0 0 0">
+                <a-torus radius="35" radius-tubular="0.1" arc="130" rotation="60 -45 0" scale="1 0.15 1" 
+                         material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 3; transparent: true; opacity: 0.95; shader: flat">
+                </a-torus>
+                <a-torus radius="35" radius-tubular="1.5" arc="130" rotation="60 -45 0" scale="1 0.15 1" 
+                         material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1; transparent: true; opacity: 0.15; shader: flat">
+                </a-torus>
+            </a-entity>
+
+            <a-entity animation="property: rotation; to: -5 -8 -3; dir: alternate; loop: true; dur: 9000; easing: easeInOutSine" rotation="0 0 0">
+                <a-torus radius="32" radius-tubular="0.08" arc="110" rotation="55 -30 10" scale="1 0.2 1" 
+                         material="color: #00ff88; emissive: #00ff88; emissiveIntensity: 3; transparent: true; opacity: 0.85; shader: flat">
+                </a-torus>
+                <a-torus radius="32" radius-tubular="1.2" arc="110" rotation="55 -30 10" scale="1 0.2 1" 
+                         material="color: #00ff88; emissive: #00ff88; emissiveIntensity: 0.8; transparent: true; opacity: 0.12; shader: flat">
+                </a-torus>
+            </a-entity>
+        </a-entity>
+
+        <a-entity id="sky-stars-group">
+            <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 200000; easing: linear" position="0 0 0">
+                <a-sphere position="-12 18 -15" radius="0.04" material="color: #fff; emissive: #fff; emissiveIntensity: 3"></a-sphere>
+                <a-sphere position="15 22 -8" radius="0.06" material="color: #a5f3fc; emissive: #a5f3fc; emissiveIntensity: 4"></a-sphere>
+                <a-sphere position="5 15 -25" radius="0.03" material="color: #fff; emissive: #fff; emissiveIntensity: 2"></a-sphere>
+                <a-sphere position="-22 25 -5" radius="0.05" material="color: #fef08a; emissive: #fef08a; emissiveIntensity: 3"></a-sphere>
+                <a-sphere position="28 17 -18" radius="0.04" material="color: #fff; emissive: #fff; emissiveIntensity: 2"></a-sphere>
+                <a-sphere position="-5 28 10" radius="0.05" material="color: #fff; emissive: #fff; emissiveIntensity: 3"></a-sphere>
+                <a-sphere position="19 16 12" radius="0.03" material="color: #fbcfe8; emissive: #fbcfe8; emissiveIntensity: 3"></a-sphere>
+                <a-sphere position="-15 20 22" radius="0.04" material="color: #fff; emissive: #fff; emissiveIntensity: 2"></a-sphere>
+                <a-sphere position="0 24 -35" radius="0.07" material="color: #fff; emissive: #fff; emissiveIntensity: 4" 
+                          animation="property: scale; to: 0.3 0.3 0.3; dir: alternate; loop: true; dur: 1500"></a-sphere>
+            </a-entity>
+        </a-entity>
+
+        <a-light type="ambient" color="#0c091f" intensity="0.5"></a-light>
+        <a-light type="directional" position="5 20 5" color="#00ffcc" intensity="0.6"></a-light>
+        <a-light type="point" position="-10 8 -5" color="#00f7ff" intensity="1.2" distance="25"></a-light>
+        <a-light type="point" position="10 5 2" color="#c77dff" intensity="1.2" distance="25"></a-light>
+
+        <a-entity id="main-experiment" position="0 0.6 0">
+            <a-box position="0 -0.1 0" width="3.5" height="0.1" depth="1.6" material="color: #09061a; metalness: 0.7; roughness: 0.1"></a-box>
+            <a-box position="0 -0.05 0" width="3.52" height="0.02" depth="1.62" material="color: #00f7ff; opacity: 0.85; emissive: #00f7ff; emissiveIntensity: 0.5"></a-box>
+
+            <a-cylinder id="cylinder" position="0 0.4 0" radius="0.5" height="1.0" material="color: #00f7ff; opacity: 0.15; transparent: true; side: double; metalness: 0.1; roughness: 0.1"></a-cylinder>
+            
+            <a-entity id="piston-group">
+                <a-cylinder id="piston-head" position="0 0.8 0" radius="0.49" height="0.04" material="color: #ffb703; emissive: #ffb703; emissiveIntensity: 0.3"></a-cylinder>
+                <a-cylinder position="0 1.3 0" radius="0.03" height="1.0" material="color: #cbd5e1; metalness: 0.8"></a-cylinder>
+            </a-entity>
+            <a-entity id="gas-particles-container"></a-entity>
+
+            <a-entity id="data-panel" position="1.35 0.85 -0.1" rotation="0 -35 0">
+                <a-plane width="1.1" height="1.2" material="color: #04020a; opacity: 0.95"></a-plane>
+                <a-box width="1.15" height="1.25" depth="0.02" position="0 0 -0.01" material="color: #c77dff; wireframe: true"></a-box>
+                <a-text value="THONG SO LY TUONG" position="0 0.45 0.02" scale="0.45 0.45 0.45" align="center" color="#ffb703" font="roboto"></a-text>
+                <a-text id="txt-p" value="Ap suat (P): --" position="-0.45 0.2 0.03" scale="0.35 0.35 0.35" font="roboto"></a-text>
+                <a-text id="txt-v" value="The tich (V): --" position="-0.45 0.0 0.03" scale="0.35 0.35 0.35" font="roboto"></a-text>
+                <a-text id="txt-t" value="Nhiet do (T): --" position="-0.45 -0.2 0.03" scale="0.35 0.35 0.35" font="roboto"></a-text>
+                <a-text id="txt-n" value="So hat (N): --" position="-0.45 -0.4 0.03" scale="0.35 0.35 0.35" color="#00ff00" font="roboto"></a-text>
+            </a-entity>
+
+            <a-entity id="control-panel" position="-1.35 1.2 -0.1" rotation="0 35 0">
+                <a-plane width="3.2" height="1.35" material="color: #04020a; opacity: 0.95" class="clickable"></a-plane>
+                <a-box width="3.25" height="1.4" depth="0.02" position="0 0 -0.01" material="color: #00f7ff; wireframe: true"></a-box>
+                <a-text value="BANG DIEU KHIEN" position="0 0.55 0.02" scale="0.45 0.45 0.45" align="center" color="#ffb703" font="roboto"></a-text>
+                
+                <a-entity id="btn-t-up" class="clickable" mixin="btn-geo" position="-1.15 0.3 0.02" material="color: #ef233c">
+                    <a-text value="Nhiet do +" mixin="txt-btn" position="0 0 0.05" scale="0.32 0.32 0.32"></a-text>
+                </a-entity>
+                <a-entity id="btn-t-down" class="clickable" mixin="btn-geo" position="-0.45 0.3 0.02" material="color: #00b4d8">
+                    <a-text value="Nhiet do -" mixin="txt-btn" position="0 0 0.05" scale="0.32 0.32 0.32"></a-text>
+                </a-entity>
+
+                <a-entity id="btn-lock-t" class="clickable" mixin="btn-geo" position="-1.15 0.08 0.02" material="color: #64748b" geometry="width:0.88">
+                    <a-text id="txt-lock-t" value="🔓 Nhiet do" mixin="txt-btn" position="0 0 0.05" scale="0.29 0.29 0.29"></a-text>
+                </a-entity>
+                <a-entity id="btn-lock-p" class="clickable" mixin="btn-geo" position="-0.22 0.08 0.02" material="color: #64748b" geometry="width:0.88">
+                    <a-text id="txt-lock-p" value="🔓 Ap suat" mixin="txt-btn" position="0 0 0.05" scale="0.29 0.29 0.29"></a-text>
+                </a-entity>
+                <a-entity id="btn-lock-v" class="clickable" mixin="btn-geo" position="0.71 0.08 0.02" material="color: #64748b" geometry="width:0.88">
+                    <a-text id="txt-lock-v" value="🔓 The tich" mixin="txt-btn" position="0 0 0.05" scale="0.29 0.29 0.29"></a-text>
+                </a-entity>
+
+                <a-entity id="btn-p-up" class="clickable" mixin="btn-geo" position="-1.15 -0.15 0.02" material="color: #9b2226">
+                    <a-text value="Ap suat +" mixin="txt-btn" position="0 0 0.05" scale="0.32 0.32 0.32"></a-text>
+                </a-entity>
+                <a-entity id="btn-p-down" class="clickable" mixin="btn-geo" position="-0.45 -0.15 0.02" material="color: #007f5f">
+                    <a-text value="Ap suat -" mixin="txt-btn" position="0 0 0.05" scale="0.32 0.32 0.32"></a-text>
+                </a-entity>
+                <a-entity id="btn-v-down" class="clickable" mixin="btn-geo" position="0.25 -0.15 0.02" material="color: #fb8500">
+                    <a-text value="Nen khi (V-)" mixin="txt-btn" position="0 0 0.05" scale="0.29 0.29 0.29"></a-text>
+                </a-entity>
+                <a-entity id="btn-v-up" class="clickable" mixin="btn-geo" position="1.0 -0.15 0.02" material="color: #2a9d8f">
+                    <a-text value="Gian khi (V+)" mixin="txt-btn" position="0 0 0.05" scale="0.29 0.29 0.29"></a-text>
+                </a-entity>
+
+                <a-entity id="btn-add-n" class="clickable" mixin="btn-geo" position="-0.8 -0.38 0.02" geometry="width: 0.5" material="color: #7209b7">
+                    <a-text value="+ Hat" mixin="txt-btn" position="0 0 0.05" scale="0.28 0.28 0.28"></a-text>
+                </a-entity>
+                <a-entity id="btn-sub-n" class="clickable" mixin="btn-geo" position="-0.2 -0.38 0.02" geometry="width: 0.5" material="color: #9d0208">
+                    <a-text value="- Hat" mixin="txt-btn" position="0 0 0.05" scale="0.28 0.28 0.28"></a-text>
+                </a-entity>
+                <a-entity id="btn-zoom-toggle" class="clickable" mixin="btn-geo" position="0.7 -0.38 0.02" material="color: #ffb703" geometry="width:1.1; height:0.15">
+                    <a-text id="txt-zoom" value="🔍 PHONG TO BANG" mixin="txt-btn" position="0 0 0.05" scale="0.28 0.28 0.28" color="#000"></a-text>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <a-entity id="maxwell-pedestal" position="3.2 0 0.5" rotation="0 -45 0">
+            <a-cylinder position="0 0.4 0" radius="0.2" height="0.8" material="color: #09061a"></a-cylinder>
+            <a-cylinder position="0 0.8 0" radius="0.25" height="0.05" material="color: #00f7ff; emissive: #00f7ff; emissiveIntensity: 0.5"></a-cylinder>
+            
+            <a-entity position="0 1.8 0">
+                <a-plane width="2.8" height="2.2" material="color: #04020a; opacity: 0.95"></a-plane>
+                <a-box width="2.85" height="2.25" depth="0.02" position="0 0 -0.02" material="color: #00f7ff; wireframe: true"></a-box>
+                <a-text value="HAM PHAN BO MAXWELL-BOLTZMANN" position="0 0.9 0.02" scale="0.5 0.5 0.5" align="center" color="#ffb703" font="roboto"></a-text>
+                <a-text value="* Phan bo xac suat toc do hat khi ly tuong.\nKhi tang Nhiet do (T), dinh do thi thap xuong\nva dich chuyen sang phai (Toc do cao hon)." position="0 0.68 0.02" scale="0.32 0.32 0.32" align="center" color="#fff" font="roboto"></a-text>
+
+                <a-entity id="maxwell-graph" position="-1.1 -0.25 0.02">
+                    <a-plane position="1.1 0 0" width="2.3" height="0.015" color="#fff"></a-plane>
+                    <a-plane position="0 0.45 0" width="0.015" height="0.95" color="#fff"></a-plane>
+                    <a-text value="v (Toc do)" position="2.15 0 0" scale="0.35 0.35 0.35"></a-text>
+                    <a-text value="f(v)" position="-0.2 0.9 0" scale="0.35 0.35 0.35"></a-text>
+                    
+                    <a-sphere id="peak-marker" radius="0.035" color="#ff0000" position="0 0 0.03" material="emissive: #ff0000; emissiveIntensity: 0.9"></a-sphere>
+                    <a-text id="peak-label" value="vp" position="0 0 0.03" scale="0.32 0.32 0.32" color="#ffb703" align="center"></a-text>
+                </a-entity>
+
+                <a-text value="f(v) = 4.PI.(m / 2.PI.k.T)^1.5 * v^2 * e^(-mv^2 / 2kT)" position="0 -0.75 0.02" scale="0.45 0.45 0.45" align="center" color="#00f7ff" font="roboto"></a-text>
+
+                <a-entity id="btn-zoom-maxwell" class="clickable" mixin="btn-geo" position="0 -0.96 0.02" material="color: #ffb703" geometry="width: 1.5; height: 0.14">
+                    <a-text id="txt-zoom-maxwell" value="🔍 PHONG TO BANG MAXWELL" mixin="txt-btn" position="0 0 0.05" scale="0.27 0.27 0.27" color="#000"></a-text>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <a-entity id="ambient-dust-system" position="0 0 0">
+            <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 60000; easing: linear" position="0 2 -3">
+                <a-sphere position="3 1 2" radius="0.035" material="color: #ff9e79; emissive: #ff9e79; emissiveIntensity: 2; transparent: true; opacity: 0.9"></a-sphere>
+                <a-sphere position="-4 2 -1" radius="0.025" material="color: #00f7ff; emissive: #00f7ff; emissiveIntensity: 1.5; transparent: true; opacity: 0.8"></a-sphere>
+                <a-sphere position="2 3 -4" radius="0.045" material="color: #c77dff; emissive: #c77dff; emissiveIntensity: 2; transparent: true; opacity: 0.9"></a-sphere>
+                <a-sphere position="-2 -1 3" radius="0.03" material="color: #ffb703; emissive: #ffb703; emissiveIntensity: 2; transparent: true; opacity: 0.85"></a-sphere>
+            </a-entity>
+            <a-entity animation="property: rotation; to: 0 -360 0; loop: true; dur: 85000; easing: linear" position="0 3 -1" rotation="30 0 20">
+                <a-sphere position="-3 0 4" radius="0.03" material="color: #67e8f9; emissive: #67e8f9; emissiveIntensity: 2"></a-sphere>
+                <a-sphere position="4 2 1" radius="0.04" material="color: #ffb703; emissive: #ffb703; emissiveIntensity: 2"></a-sphere>
+                <a-sphere position="-1 -2 -3" radius="0.025" material="color: #c77dff; emissive: #c77dff; emissiveIntensity: 1.8"></a-sphere>
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+        const R = 0.0821; let T = 300; let V = 4.0; let particleCount = 50; let P = 1.0;
+        let lockT = false, lockP = false, lockV = false;
+
+        const particles = []; 
+        const containerRadius = 0.45; 
+        const particleRadius = 0.025; 
+        const particlesContainer = document.querySelector('#gas-particles-container');
+
+        const maxwellGraph = document.querySelector('#maxwell-graph');
+        const numBars = 35;
+        const maxwellBars = [];
+
+        for (let i = 0; i < numBars; i++) {
+            let bar = document.createElement('a-plane');
+            bar.setAttribute('material', 'color: #00f7ff; opacity: 0.85; metalness: 0.2');
+            maxwellGraph.appendChild(bar);
+            maxwellBars.push({
+                element: bar,
+                curH: 0.01, tarH: 0.01,
+                curR: 0, tarR: 0,
+                curG: 247, tarG: 247,
+                curB: 255, tarB: 255
+            });
+        }
+
+        let peakMarkerObj = { curX: 0, tarX: 0, curH: 0, tarH: 0, tarV: 0 };
+
+        function createParticle() {
+            let sphere = document.createElement('a-sphere');
+            sphere.setAttribute('radius', particleRadius);
+            sphere.setAttribute('mixin', 'blue-mat');
+            let angle = Math.random() * Math.PI * 2, r = Math.random() * containerRadius;
+            let x = Math.cos(angle) * r, z = Math.sin(angle) * r, y = Math.random() * 0.4 + 0.05; 
+            sphere.setAttribute('position', `${x} ${y} ${z}`);
+            particlesContainer.appendChild(sphere);
+            particles.push({
+                element: sphere, x: x, y: y, z: z, 
+                vx: (Math.random() - 0.5) * 0.015, vy: (Math.random() - 0.5) * 0.015, vz: (Math.random() - 0.5) * 0.015
+            });
+        }
+        
+        for(let i = 0; i < particleCount; i++) createParticle();
+
+        function removeParticle() { 
+            if (particles.length > 0) { 
+                let p = particles.pop(); 
+                particlesContainer.removeChild(p.element); 
+            } 
+        }
+
+        function updateMaxwellGraphTargets() {
+            const k_constant = 0.016; 
+            const double_KT = 2 * k_constant * T;
+            let maxF = 0, peakV = 0, peakX = 0, peakH = 0;
+
+            maxwellBars.forEach((barObj, index) => {
+                const xPos = 0.04 + index * 0.06;
+                const v = xPos * 3.0;            
+                
+                let f_v = 4 * Math.PI * Math.pow(1 / (Math.PI * double_KT), 1.5) * Math.pow(v, 2) * Math.exp(-Math.pow(v, 2) / double_KT);
+                let height = f_v * 1.6; 
+                height = Math.max(0.005, Math.min(height, 0.88));
+
+                if (height > maxF) {
+                    maxF = height; peakV = v; peakX = xPos; peakH = height;
+                }
+
+                barObj.tarH = height;
+                let tempRatio = (T - 100) / 500; 
+                let speedRatio = index / numBars;
+                barObj.tarR = Math.min(255, Math.floor((tempRatio * 0.7 + speedRatio * 0.3) * 280));
+                barObj.tarG = Math.min(255, Math.floor((1 - Math.abs(speedRatio - 0.4)) * 210));
+                barObj.tarB = Math.min(255, Math.floor((1 - tempRatio * 0.8) * 255));
+            });
+
+            peakMarkerObj.tarX = peakX;
+            peakMarkerObj.tarH = peakH;
+            peakMarkerObj.tarV = peakV;
+        }
+
+        function updatePhysics() {
+            let n_effective = particleCount * 0.005;
+            if (lockT) P = (n_effective * R * T) / V;
+            else if (lockP) T = (P * V) / (n_effective * R);
+            else if (lockV) P = (n_effective * R * T) / V;
+            else P = (n_effective * R * T) / V;
+
+            document.querySelector('#txt-p').setAttribute('value', `Ap suat (P): ${P.toFixed(2)} atm`);
+            document.querySelector('#txt-v').setAttribute('value', `The tich (V): ${V.toFixed(2)} L`);
+            document.querySelector('#txt-t').setAttribute('value', `Nhiet do (T): ${T.toFixed(0)} K`);
+            document.querySelector('#txt-n').setAttribute('value', `So hat (N): ${particleCount}`);
+
+            let pistonY = 0.05 + (V * 0.15);
+            document.querySelector('#piston-group').setAttribute('position', `0 ${pistonY - 0.8} 0`);
+            
+            updateMaxwellGraphTargets();
+        }
+
+        function animate() {
+            let speedFactor = Math.sqrt(T / 300); 
+            let currentCeiling = 0.05 + (V * 0.15) - particleRadius;
+            
+            particles.forEach(p => {
+                p.x += p.vx * speedFactor; p.y += p.vy * speedFactor; p.z += p.vz * speedFactor;
+                let dist = Math.sqrt(p.x*p.x + p.z*p.z);
+                if (dist > containerRadius) {
+                    let nx = p.x/dist, nz = p.z/dist, dot = p.vx*nx + p.vz*nz;
+                    p.vx -= 2*dot*nx; p.vz -= 2*dot*nz; p.x = nx * containerRadius; p.z = nz * containerRadius;
+                }
+                if (p.y < 0.02) { p.y = 0.02; p.vy *= -1; }
+                if (p.y > currentCeiling) { p.y = currentCeiling; p.vy *= -1; }
+                p.element.setAttribute('position', `${p.x} ${p.y} ${p.z}`);
+            });
+
+            const lerpSpeed = 0.12;
+            maxwellBars.forEach((barObj, index) => {
+                const xPos = 0.04 + index * 0.06;
+                barObj.curH += (barObj.tarH - barObj.curH) * lerpSpeed;
+                barObj.curR += (barObj.tarR - barObj.curR) * lerpSpeed;
+                barObj.curG += (barObj.tarG - barObj.curG) * lerpSpeed;
+                barObj.curB += (barObj.tarB - barObj.curB) * lerpSpeed;
+
+                barObj.element.setAttribute('geometry', { primitive: 'plane', width: 0.052, height: barObj.curH });
+                barObj.element.setAttribute('position', `${xPos} ${barObj.curH / 2} 0.01`);
+                barObj.element.setAttribute('material', `color: rgb(${Math.round(barObj.curR)}, ${Math.round(barObj.curG)}, ${Math.round(barObj.curB)}); opacity: 0.88`);
+            });
+
+            peakMarkerObj.curX += (peakMarkerObj.tarX - peakMarkerObj.curX) * lerpSpeed;
+            peakMarkerObj.curH += (peakMarkerObj.tarH - peakMarkerObj.curH) * lerpSpeed;
+            const peakMarker = document.querySelector('#peak-marker');
+            const peakLabel = document.querySelector('#peak-label');
+            if (peakMarker && peakLabel) {
+                peakMarker.setAttribute('position', `${peakMarkerObj.curX} ${peakMarkerObj.curH + 0.03} 0.03`);
+                peakLabel.setAttribute('position', `${peakMarkerObj.curX} ${peakMarkerObj.curH + 0.12} 0.03`);
+                peakLabel.setAttribute('value', `Dinh Vp\n(${peakMarkerObj.tarV.toFixed(1)} m/s)`);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Tương tác nút bấm
+        document.querySelector('#btn-t-up').addEventListener('click', () => { 
+            if (lockT) return; 
+            if (lockP) V = Math.min(V + 0.2, 5.0); 
+            else T = Math.min(T + 50, 600); 
+            updatePhysics(); 
+        });
+        document.querySelector('#btn-t-down').addEventListener('click', () => { 
+            if (lockT) return; 
+            if (lockP) V = Math.max(V - 0.2, 1.6); 
+            else T = Math.max(T - 50, 100); 
+            updatePhysics(); 
+        });
+
+        document.querySelector('#btn-p-up').addEventListener('click', () => { 
+            if (lockP) return;
+            if (lockV) T = Math.min(T + 50, 600); 
+            else V = Math.max(V - 0.2, 1.6);      
+            updatePhysics(); 
+        });
+        document.querySelector('#btn-p-down').addEventListener('click', () => { 
+            if (lockP) return;
+            if (lockV) T = Math.max(T - 50, 100); 
+            else V = Math.min(V + 0.2, 5.0);      
+            updatePhysics(); 
+        });
+
+        document.querySelector('#btn-v-up').addEventListener('click', () => { 
+            if (lockV) return; 
+            V = Math.min(V + 0.2, 5.0); 
+            updatePhysics(); 
+        });
+        document.querySelector('#btn-v-down').addEventListener('click', () => { 
+            if (lockV) return; 
+            V = Math.max(V - 0.2, 1.6); 
+            updatePhysics(); 
+        });
+
+       document.querySelector('#btn-add-n').addEventListener('click', () => { 
+            // Sửa điều kiện từ 150 thành 70 để đặt mức tối đa là 70 hạt
+            if (particleCount < 70) { 
+                for(let i=0; i<10; i++) createParticle(); 
+                particleCount += 10; 
+                updatePhysics(); 
+            } 
+        });
+
+        document.querySelector('#btn-sub-n').addEventListener('click', () => { 
+            if (particleCount > 10) { 
+                for(let i=0; i<10; i++) removeParticle(); 
+                particleCount -= 10; 
+                updatePhysics(); 
+            } 
+        });
+        function toggleLock(type) {
+            lockT = lockP = lockV = false;
+            if (type === 'T') lockT = true; else if (type === 'P') lockP = true; else if (type === 'V') lockV = true;
+            document.querySelector('#txt-lock-t').setAttribute('value', lockT ? '✅ Nhiet do' : '🔓 Nhiet do');
+            document.querySelector('#txt-lock-p').setAttribute('value', lockP ? '✅ Ap suat' : '🔓 Ap suat');
+            document.querySelector('#txt-lock-v').setAttribute('value', lockV ? '✅ The tich' : '🔓 The tich');
+            document.querySelector('#btn-lock-t').setAttribute('material', `color: ${lockT ? '#22c55e' : '#64748b'}`);
+            document.querySelector('#btn-lock-p').setAttribute('material', `color: ${lockP ? '#22c55e' : '#64748b'}`);
+            document.querySelector('#btn-lock-v').setAttribute('material', `color: ${lockV ? '#22c55e' : '#64748b'}`);
+            updatePhysics();
+        }
+
+        document.querySelector('#btn-lock-t').addEventListener('click', () => toggleLock('T'));
+        document.querySelector('#btn-lock-p').addEventListener('click', () => toggleLock('P'));
+        document.querySelector('#btn-lock-v').addEventListener('click', () => toggleLock('V'));
+
+        let isZoomed = false;
+        const controlPanel = document.querySelector('#control-panel');
+        const txtZoom = document.querySelector('#txt-zoom');
+        document.querySelector('#btn-zoom-toggle').addEventListener('click', () => {
+            if (!isZoomed) {
+                controlPanel.setAttribute('animation__pos', 'property: position; to: -1.6 1.55 2.0; dur: 550; easing: easeOutQuad');
+                controlPanel.setAttribute('animation__rot', 'property: rotation; to: 0 12 0; dur: 550; easing: easeOutQuad');
+                controlPanel.setAttribute('animation__scale', 'property: scale; to: 1.08 1.08 1.08; dur: 550; easing: easeOutQuad');
+                txtZoom.setAttribute('value', '🔍 THU NHO'); txtZoom.setAttribute('color', '#ef4444');
+                isZoomed = true;
+            } else {
+                controlPanel.setAttribute('animation__pos', 'property: position; to: -1.35 1.2 -0.1; dur: 550; easing: easeOutQuad');
+                controlPanel.setAttribute('animation__rot', 'property: rotation; to: 0 35 0; dur: 550; easing: easeOutQuad');
+                controlPanel.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 550; easing: easeOutQuad');
+                txtZoom.setAttribute('value', '🔍 PHONG TO BANG'); txtZoom.setAttribute('color', '#000000');
+                isZoomed = false;
+            }
+        });
+
+        let isMaxwellZoomed = false;
+        const maxwellPedestal = document.querySelector('#maxwell-pedestal');
+        const txtZoomMaxwell = document.querySelector('#txt-zoom-maxwell');
+        document.querySelector('#btn-zoom-maxwell').addEventListener('click', () => {
+            if (!isMaxwellZoomed) {
+                maxwellPedestal.setAttribute('animation__pos', 'property: position; to: 0 1.55 1.8; dur: 600; easing: easeOutQuad');
+                maxwellPedestal.setAttribute('animation__rot', 'property: rotation; to: 0 0 0; dur: 600; easing: easeOutQuad');
+                maxwellPedestal.setAttribute('animation__scale', 'property: scale; to: 0.88 0.88 0.88; dur: 600; easing: easeOutQuad');
+                txtZoomMaxwell.setAttribute('value', '🔍 THU NHO BANG MAXWELL'); txtZoomMaxwell.setAttribute('color', '#ef4444');
+                isMaxwellZoomed = true;
+            } else {
+                maxwellPedestal.setAttribute('animation__pos', 'property: position; to: 3.2 0 0.5; dur: 600; easing: easeOutQuad');
+                maxwellPedestal.setAttribute('animation__rot', 'property: rotation; to: 0 -45 0; dur: 600; easing: easeOutQuad');
+                maxwellPedestal.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 600; easing: easeOutQuad');
+                txtZoomMaxwell.setAttribute('value', '🔍 PHONG TO BANG MAXWELL'); txtZoomMaxwell.setAttribute('color', '#000000');
+                isMaxwellZoomed = false;
+            }
+        });
+
+        updatePhysics(); 
+        animate();
+    </script>
+</body>
+</html>
